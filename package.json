@@ -1,0 +1,8 @@
+{
+  "name": "electron_gallery",
+  "version": "1.0.0",
+  "description": "Small WebASM/Rust/TypeScript/parcelJS demo",
+  "main": "index.js",
+  "author": "Ville Heikkinen",
+  "license": "MIT"
+}
