@@ -1,0 +1,30 @@
+{
+  "compilerOptions": {
+    "outDir": "ts-build",
+    "sourceMap": true,
+    "noImplicitAny": true,
+    "module": "commonjs",
+    "target": "es6",
+    "strictNullChecks": true,
+    "jsx": "react",
+    "moduleResolution": "node",
+    "baseUrl": "./src",
+    "types": ["node", "webassembly-js-api"],
+    "paths": {
+      "renderer": ["renderer/*"],
+      "main": ["main/*"]
+    },
+    "allowJs": true,
+    "plugins": [
+      { "name": "tslint-language-service"}
+    ],
+    "extensions": {
+      "**.*.rs": "RS"
+    }
+  },
+  "exclude": [
+    "node_modules",
+    "priv",
+    "ts-build"
+  ]
+}
