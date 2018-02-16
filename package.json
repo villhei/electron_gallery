@@ -6,6 +6,7 @@
   "author": "Ville Heikkinen",
   "license": "MIT",
   "devDependencies": {
+    "concurrently": "^3.5.1",
     "parcel-bundler": "^1.5.1",
     "parcel-plugin-typescript": "^0.6.0",
     "tslint": "^5.9.1"
@@ -23,7 +24,9 @@
   },
   "scripts": {
     "build": "tsc",
-    "start": "parcel src/renderer/index.html",
-    "start-electron": "yarn build && electron ts-build/src/main.js"
+    "run:electron": "electron ts-build/src/main.js",
+    "start:client": "parcel src/renderer/index.html",
+    "start:electron": "yarn build && yarn run:electron",
+    "start:dev": "concurrently --kill-others \"yarn start:client\" \"yarn start:electron\""
   }
 }

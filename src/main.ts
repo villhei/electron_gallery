@@ -12,7 +12,11 @@ function initMain(): Promise<Electron.BrowserWindow> {
     });
 
     app.on('ready', function () {
-      const main = new BrowserWindow({ width: 800, height: 600 })
+      const main = new BrowserWindow({
+        title: 'Image gallery',
+        width: 800,
+        height: 600
+      })
       main.loadURL('http://localhost:1234')
       resolve(main)
     })
