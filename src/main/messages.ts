@@ -1,0 +1,2 @@
+export const RECEIVE_FILES = 'IPC:RECEIVE_FILES'
+export const GET_FILES = 'IPC:GET_FILES'

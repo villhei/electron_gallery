@@ -10,6 +10,12 @@
 
 <body>
   <div id="root"></div>
+  <script type="text/javascript">
+    var userAgent = navigator.userAgent
+    if (userAgent.indexOf(' electron/') > -1) {
+      window.___electron = require('electron')
+    }
+  </script>
   <script src="./index.tsx"></script>
 </body>
 

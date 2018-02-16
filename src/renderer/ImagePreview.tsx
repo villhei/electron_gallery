@@ -1,19 +1,23 @@
 import * as React from 'react'
-import { Card,  Image, Icon } from 'semantic-ui-react'
-import * as iceland from './iceland.jpg'
+import { Card, Image, Icon } from 'semantic-ui-react'
 
-const ImagePreview = () => {
+export type ImagePreviewProps = {
+  name: string,
+  modified: string,
+  src: any
+}
+const ImagePreview = (props: ImagePreviewProps) => {
   return (
     <Card>
-      <Image src={iceland} />
+      <Image src={props.src} />
       <Card.Content>
         <Card.Header>
-          Matthew
+          {props.name}
         </Card.Header>
         <Card.Meta>
           <span className='date'>
-            Joined in 2015
-        </span>
+            {props.modified}
+          </span>
         </Card.Meta>
         <Card.Description>
           Matthew is a musician living in Nashville.
