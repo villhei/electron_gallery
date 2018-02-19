@@ -1,4 +1,4 @@
-import * as Electron from 'electron'
+import { IpcRenderer, IpcMessageEvent } from 'electron'
 import { Dispatch } from 'react-redux'
 import { State } from 'renderer/reducer'
 import mockIpcRenderer, { ElectronEventEmitter } from 'main/ipcRenderer'
@@ -7,12 +7,11 @@ import * as actions from 'renderer/actions'
 import { Image } from 'renderer/reducer'
 import { File, isImageFile } from 'main/fileUtils'
 
-export const ipcRenderer: ElectronEventEmitter =
+export const ipcRenderer: IpcRenderer =
   (<any>window).___electron ? (<any>window).___electron.ipcRenderer : mockIpcRenderer
 
 export default function connectRenderer<State>(dispatch: Dispatch<State>) {
-  ipcRenderer.on(messages.RECEIVE_FILES, (event, files: File[]) => {
-    console.log('received', files)
+  ipcRenderer.on(messages.RECEIVE_FILES, (event: IpcMessageEvent, files: File[]) => {
     const images: Image[] = files
       .filter(file => isImageFile(file))
       .map((file: File) => {
