@@ -4,7 +4,8 @@ import { Card, Image, Icon } from 'semantic-ui-react'
 export type ImagePreviewProps = {
   name: string,
   modified: string,
-  hasData: boolean
+  hasData: boolean,
+  path: string
 }
 
 function getImageData(name: string) {
@@ -14,10 +15,10 @@ function getImageData(name: string) {
   return URL.createObjectURL(blob)
 }
 const ImagePreview = (props: ImagePreviewProps) => {
-  const data = props.hasData ? getImageData(props.name) : null
+  //const data = props.hasData ? getImageData(props.name) : null
   return (
     <Card>
-      <Image src={data} />
+      <Image src={props.path} />
       <Card.Content>
         <Card.Header>
           {props.name}

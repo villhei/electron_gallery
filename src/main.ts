@@ -14,6 +14,9 @@ function initMain(): Promise<Electron.BrowserWindow> {
 
     app.on('ready', function () {
       const main = new BrowserWindow({
+        webPreferences: {
+          webSecurity: false
+        },
         title: 'Image gallery',
         width: 800,
         height: 600

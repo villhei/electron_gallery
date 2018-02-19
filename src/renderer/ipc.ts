@@ -17,14 +17,14 @@ export default function connectRenderer<State>(dispatch: Dispatch<State>) {
       .map((file: File) => {
         return {
           name: file.name,
-          path: file.path,
+          path: file.url,
           modified: file.modified,
           hasData: false
         }
       })
     dispatch(actions.receiveFiles(images))
     images.forEach((image) => {
-      requestContents(image)
+     // requestContents(image)
     })
   })
 

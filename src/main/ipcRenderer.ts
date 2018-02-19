@@ -9,6 +9,7 @@ const MOCK_FILE: File = {
   modified: new Date().toISOString(),
   created: new Date().toISOString(),
   path: 'path/to/islanti.jpg',
+  url: 'path/to/islanti.jpg',
   size: 4910249210,
   isFile: true,
   isDirectory: false

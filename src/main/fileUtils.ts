@@ -14,6 +14,7 @@ export const SUPPORTED_IMAGE_FILES = new Set<string>([
 export type File = {
   name: string,
   path: string,
+  url: string,
   modified: string,
   created: string,
   size: number,
@@ -75,7 +76,8 @@ export function fileDescriptionsInPath(pathname: string): P<File[]> {
         created: stats.ctime.toISOString(),
         size: stats.size,
         isFile: stats.isFile(),
-        isDirectory: stats.isDirectory()
+        isDirectory: stats.isDirectory(),
+        url: 'file://' + filePath
       }
     }))
 }
