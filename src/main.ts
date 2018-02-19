@@ -1,5 +1,6 @@
 
 import * as electron from 'electron'
+import configureIpc from './main/ipcMain'
 
 import { app, BrowserWindow } from 'electron'
 
@@ -22,9 +23,8 @@ function initMain(): Promise<Electron.BrowserWindow> {
     })
   })
 }
-
+configureIpc(app.getPath('pictures'))
 const mainWindow = initMain()
 
 mainWindow.then((window: Electron.BrowserWindow) => {
-
 })

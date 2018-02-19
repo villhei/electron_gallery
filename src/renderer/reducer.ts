@@ -1,13 +1,14 @@
 import { reducerWithInitialState } from 'typescript-fsa-reducers'
 import * as actions from 'renderer/actions'
-export type Picture = {
+
+export type Image = {
   name: string,
-  fileName: string
+  path: string
   modified: string
 }
 
 export type State = {
-  pictures: Picture[]
+  pictures: Image[]
 }
 
 const INITIAL_STATE: State = {
@@ -15,6 +16,6 @@ const INITIAL_STATE: State = {
 }
 
 const reducer = reducerWithInitialState(INITIAL_STATE)
-  .case(actions.receiveFiles, (state: State, pictures: Picture[]) => (
+  .case(actions.receiveFiles, (state: State, pictures: Image[]) => (
     { ...state, pictures }))
 export default reducer

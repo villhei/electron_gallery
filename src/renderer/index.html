@@ -11,8 +11,7 @@
 <body>
   <div id="root"></div>
   <script type="text/javascript">
-    var userAgent = navigator.userAgent
-    if (userAgent.indexOf(' electron/') > -1) {
+    if (window && window.process && window.process.type) {
       window.___electron = require('electron')
     }
   </script>
