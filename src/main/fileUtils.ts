@@ -21,6 +21,17 @@ export type File = {
   isDirectory: boolean
 }
 
+export function readFileAsync(path: string): P<Buffer> {
+  return new P((resolve, reject) => {
+    fs.readFile(path, (err: FsException, data: Buffer) => {
+      if (err) {
+        reject(err)
+      }
+      resolve(data)
+    })
+  })
+}
+
 function readDirAsync(path: string): P<string[]> {
   return new P((resolve, reject) => {
     fs.readdir(path, (err: FsException, files: string[]) => {

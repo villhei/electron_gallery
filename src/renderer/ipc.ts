@@ -1,7 +1,7 @@
 import { IpcRenderer, IpcMessageEvent } from 'electron'
 import { Dispatch } from 'react-redux'
 import { State } from 'renderer/reducer'
-import mockIpcRenderer, { ElectronEventEmitter } from 'main/ipcRenderer'
+import mockIpcRenderer from 'main/ipcRenderer'
 import * as messages from 'main/messages'
 import * as actions from 'renderer/actions'
 import { Image } from 'renderer/reducer'
@@ -18,14 +18,29 @@ export default function connectRenderer<State>(dispatch: Dispatch<State>) {
         return {
           name: file.name,
           path: file.path,
-          modified: file.modified
+          modified: file.modified,
+          hasData: false
         }
       })
     dispatch(actions.receiveFiles(images))
+    images.forEach((image) => {
+      requestContents(image)
+    })
+  })
+
+  ipcRenderer.on(messages.RECEIVE_FILE_CONTENT, (event: IpcMessageEvent, name: string, data: ArrayBuffer) => {
+    if (!(window as any).___imageData) {
+      (window as any).___imageData = {}
+    }
+    (window as any).___imageData[name] = data
+    dispatch(actions.receiveImageData({ name }))
   })
 }
 
 export function requestFiles(): void {
-  console.log('requesting files')
   ipcRenderer.send(messages.GET_FILES)
+}
+
+export function requestContents(image: Image) {
+  ipcRenderer.send(messages.READ_FILE_CONTENT, image.name, image.path)
 }

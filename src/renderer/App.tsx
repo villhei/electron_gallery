@@ -10,16 +10,15 @@ import * as iceland from './iceland.jpg'
 const range = Array.from(new Array(10)).map((n, i) => i)
 
 export type AppProps = {
-  pictures: Image[]
+  images: Image[]
 }
 
 class App extends React.Component<AppProps> {
-
   componentDidMount() {
     ipc.requestFiles()
   }
   render() {
-    const { pictures } = this.props
+    const { images } = this.props
     return (
       <Container fluid style={{ marginTop: '3em' }}>
         <Grid padded='horizontally'>
@@ -29,9 +28,9 @@ class App extends React.Component<AppProps> {
             </Grid.Column>
             <Grid.Column width={11}>
               <Grid columns={16} >
-                {pictures.map((picture) => (
-                  <Grid.Column width={4}>
-                    <ImagePreview {...picture} src={iceland} />
+                {images.map((image) => (
+                  <Grid.Column width={4} key={image.name}>
+                    <ImagePreview {...image} />
                   </Grid.Column>
                 ))}
               </Grid>
@@ -43,6 +42,11 @@ class App extends React.Component<AppProps> {
   }
 }
 
-const mapStateToProps = ({ pictures }: State) => ({ pictures })
+const mapStateToProps = ({ imageDescriptions }: State) => {
+  const images = imageDescriptions.all.map((name => imageDescriptions.byId[name]))
+  return {
+    images
+  }
+}
 
 export default connect(mapStateToProps)(App)
