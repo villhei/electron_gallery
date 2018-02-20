@@ -1,66 +1,22 @@
 import { reducerWithInitialState } from 'typescript-fsa-reducers'
 import * as actions from 'renderer/actions'
-
+import { Path } from 'main/fileUtils'
 
 export type Map<T> = {
   [key: string]: T
 }
 
-export type ModelEntry<T> = {
-  byId: Map<T>,
-  all: string[]
-}
-export type Image = {
-  name: string,
-  path: string
-  modified: string,
-  hasData: boolean
-}
-
 export type State = {
-  imageDescriptions: ModelEntry<Image>
+  path: null | Path
 }
 
 const INITIAL_STATE: State = {
-  imageDescriptions: {
-    byId: {},
-    all: []
-  }
+  path: null
 }
-
 const reducer = reducerWithInitialState(INITIAL_STATE)
-  .case(actions.receiveFiles, (state: State, images: Image[]) => {
-    const all = images.map(({ name }) => name)
-    const byId: Map<Image> = images.reduce(
-      (acc, image: Image) => {
-        return {
-          ...acc,
-          [image.name]: image
-        }
-      }, {})
-    const imageDescriptions = {
-      byId,
-      all
-    }
-    return { ...state, imageDescriptions }
-  })
-  .case(actions.receiveImageData, (state: State, { name }) => {
-    const { byId } = state.imageDescriptions
-    const image = byId[name]
-    const updatedImage = {
-      ...image,
-      hasData: true
-    }
-    const updatedState = {
-      ...state,
-      imageDescriptions: {
-        ...state.imageDescriptions,
-        byId: {
-          ...byId,
-          [name]: updatedImage
-        }
-      }
-    }
-    return updatedState
-  })
+  .case(actions.receivePath, (state: State, path: Path) => ({
+    ...state,
+    path
+  }))
+
 export default reducer

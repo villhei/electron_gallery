@@ -4,21 +4,15 @@ import { Card, Image, Icon } from 'semantic-ui-react'
 export type ImagePreviewProps = {
   name: string,
   modified: string,
-  hasData: boolean,
   path: string
+  url: string,
+  handleSelect: (path: string) => void
 }
 
-function getImageData(name: string) {
-  const arrayBuffer = (window as any).___imageData[name] as ArrayBuffer
-  const bytes = new Uint8Array(arrayBuffer)
-  const blob = new Blob([bytes.buffer])
-  return URL.createObjectURL(blob)
-}
 const ImagePreview = (props: ImagePreviewProps) => {
-  //const data = props.hasData ? getImageData(props.name) : null
   return (
-    <Card>
-      <Image src={props.path} />
+    <Card >
+      <Image className={'preview'} src={props.url} onClick={() => props.handleSelect(props.path)} />
       <Card.Content>
         <Card.Header>
           {props.name}

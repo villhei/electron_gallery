@@ -6,6 +6,7 @@ import 'semantic-ui-css/semantic.min.css'
 import App from 'renderer/App'
 import reducer from 'renderer/reducer'
 import setupIpc from 'renderer/ipc'
+import 'renderer/style.css'
 
 const rootDiv = document.getElementById('root') as HTMLElement
 const store = createStore(reducer)

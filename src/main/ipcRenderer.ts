@@ -1,23 +1,32 @@
-import { IpcRenderer } from 'electron'
+import * as Electron from 'electron'
 import * as messages from 'main/messages'
-import { File } from 'main/fileUtils'
+import { Path, Directory, File, } from 'main/fileUtils'
 import * as EventEmitter from 'eventemitter3'
 import * as iceland from 'renderer/iceland.jpg'
 
+const modified = new Date().toISOString()
+const created = new Date().toISOString()
 const MOCK_FILE: File = {
   name: 'islanti.jpg',
-  modified: new Date().toISOString(),
-  created: new Date().toISOString(),
-  path: 'path/to/islanti.jpg',
-  url: 'path/to/islanti.jpg',
-  size: 4910249210,
+  modified,
+  created,
+  path: '/path/to/islanti.jpg',
+  size: 41421421,
   isFile: true,
-  isDirectory: false
+  isDirectory: false,
+  url: iceland,
 }
 
-const FILES_MOCK: File[] = [MOCK_FILE]
+const MOCK_DIRECTORY: Directory = {
+  path: '/path/to/',
+  modified,
+  created,
+  isDirectory: true,
+  isFile: false,
+  children: [MOCK_FILE]
+}
 
-const emitter: IpcRenderer = Object.assign(new EventEmitter(), {
+const emitter: Electron.IpcRenderer = Object.assign(new EventEmitter(), {
   setMaxListeners: (n: number) => {
     return this
   },
@@ -35,8 +44,12 @@ const emitter: IpcRenderer = Object.assign(new EventEmitter(), {
 
 const ipcEvent = new Event('ipcEvent')
 
-emitter.on(messages.GET_FILES, () => {
-  emitter.emit(messages.RECEIVE_FILES, ipcEvent, FILES_MOCK)
+emitter.on(messages.GET_PATH, (path?: string) => {
+  if (path && path === '/path/to/islanti.jpg') {
+    emitter.emit(messages.RECEIVE_PATH, ipcEvent, MOCK_FILE)
+  } else {
+    emitter.emit(messages.RECEIVE_PATH, ipcEvent, MOCK_DIRECTORY)
+  }
 })
 
 emitter.on(messages.READ_FILE_CONTENT, (name: string, path: string) => {
@@ -45,4 +58,4 @@ emitter.on(messages.READ_FILE_CONTENT, (name: string, path: string) => {
   })
 })
 
-export default emitter as Electron.EventEmitter
+export default emitter

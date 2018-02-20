@@ -1,24 +1,32 @@
 import * as React from 'react'
 import { connect } from 'react-redux'
 import { Button, Container, Grid, Header } from 'semantic-ui-react'
-import ImagePreview from 'renderer/ImagePreview'
 import Menu from 'renderer/Menu'
-import { State, Image } from 'renderer/reducer'
+import Gallery from 'renderer/Gallery'
+import ImageView from 'renderer/ImageView'
+import { State } from 'renderer/reducer'
 import * as ipc from 'renderer/ipc'
+import { Path, isFile, isDirectory } from 'main/fileUtils'
 import * as iceland from './iceland.jpg'
 
 const range = Array.from(new Array(10)).map((n, i) => i)
 
 export type AppProps = {
-  images: Image[]
+  path: Path | null
 }
 
 class App extends React.Component<AppProps> {
   componentDidMount() {
-    ipc.requestFiles()
+    console.log('onMount')
+    ipc.requestPath()
+  }
+
+  handleSelect(path: string) {
+    console.log('selecting', path)
+    ipc.requestPath(path)
   }
   render() {
-    const { images } = this.props
+    const { path } = this.props
     return (
       <Container fluid style={{ marginTop: '3em' }}>
         <Grid padded='horizontally'>
@@ -26,14 +34,9 @@ class App extends React.Component<AppProps> {
             <Grid.Column width={4} >
               <Menu />
             </Grid.Column>
-            <Grid.Column width={11}>
-              <Grid columns={16} >
-                {images.map((image) => (
-                  <Grid.Column width={4} key={image.name}>
-                    <ImagePreview {...image} />
-                  </Grid.Column>
-                ))}
-              </Grid>
+            <Grid.Column width={12}>
+              {path && isDirectory(path) && <Gallery path={path} select={this.handleSelect} />}
+              {path && isFile(path) && <ImageView image={path} />}
             </Grid.Column>
           </Grid.Row>
         </Grid>
@@ -42,11 +45,8 @@ class App extends React.Component<AppProps> {
   }
 }
 
-const mapStateToProps = ({ imageDescriptions }: State) => {
-  const images = imageDescriptions.all.map((name => imageDescriptions.byId[name]))
-  return {
-    images
-  }
-}
+const mapStateToProps = ({ path }: State) => ({
+  path
+})
 
 export default connect(mapStateToProps)(App)

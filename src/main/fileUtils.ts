@@ -11,16 +11,53 @@ export const SUPPORTED_IMAGE_FILES = new Set<string>([
   'gif',
   'png'
 ])
-export type File = {
-  name: string,
+
+export type Path = Directory | File
+
+export type BasePath = {
   path: string,
-  url: string,
   modified: string,
   created: string,
-  size: number,
-  isFile: boolean,
-  isDirectory: boolean
 }
+
+export type Directory = BasePath & {
+  children: Path[] | null,
+  isDirectory: true,
+  isFile: false
+}
+
+export type File = BasePath & {
+  name: string,
+  url: string,
+  size: number,
+  isDirectory: false,
+  isFile: true
+}
+
+function Directory(path: string, modified: Date, created: Date, children: Path[] | null): Directory {
+  return {
+    path,
+    modified: modified.toISOString(),
+    created: modified.toISOString(),
+    children,
+    isFile: false,
+    isDirectory: true
+  }
+}
+
+function File(path: string, name: string, size: number, modified: Date, created: Date): File {
+  return {
+    path,
+    name,
+    url: 'file://' + path,
+    modified: modified.toISOString(),
+    created: created.toISOString(),
+    size,
+    isFile: true,
+    isDirectory: false
+  }
+}
+
 
 export function readFileAsync(path: string): P<Buffer> {
   return new P((resolve, reject) => {
@@ -44,7 +81,7 @@ function readDirAsync(path: string): P<string[]> {
   })
 }
 
-function statAsync(path: string): P<fs.Stats> {
+export function statAsync(path: string): P<fs.Stats> {
   return new P((resolve, reject) => {
     fs.stat(path, (err: FsException, stats: fs.Stats) => {
       if (err) {
@@ -64,20 +101,23 @@ export function getExtension(file: File): string {
   return file.name.slice((file.name.lastIndexOf('.') - 1 >>> 0) + 2)
 }
 
-export function fileDescriptionsInPath(pathname: string): P<File[]> {
-  return readDirAsync(pathname)
-    .then(files => P.map(files, async (file: string) => {
-      const filePath: string = path.join(pathname, file)
-      const stats = await statAsync(filePath)
-      return {
-        name: file,
-        path: filePath,
-        modified: stats.mtime.toISOString(),
-        created: stats.ctime.toISOString(),
-        size: stats.size,
-        isFile: stats.isFile(),
-        isDirectory: stats.isDirectory(),
-        url: 'file://' + filePath
-      }
-    }))
+export function isFile(path: Path): path is File {
+  return path.isFile
+}
+
+export function isDirectory(path: Path): path is Directory {
+  return path.isDirectory
+}
+
+export function getPath(pathname: string, depth: number): P<Path> {
+  const fileName = pathname.substring(pathname.lastIndexOf(path.delimiter))
+  return statAsync(pathname).then(async (stats: fs.Stats): Promise<Path> => {
+    if (stats.isFile()) {
+      return File(pathname, fileName, stats.size, stats.mtime, stats.ctime)
+    } else if (depth < 1) {
+      return Directory(pathname, stats.mtime, stats.ctime, null)
+    }
+    const children = await P.map(readDirAsync(pathname), child => getPath(path.join(pathname, child), depth - 1))
+    return Directory(pathname, stats.mtime, stats.ctime, children)
+  })
 }

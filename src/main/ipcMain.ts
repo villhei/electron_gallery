@@ -3,13 +3,14 @@ import { Stats } from 'fs'
 import * as messages from './messages'
 import * as fileUtils from './fileUtils'
 
-type File = fileUtils.File
+type Path = fileUtils.Path
 
 export default function configure(defaultPath: string) {
-  ipcMain.on(messages.GET_FILES, (event: Event, path?: string) => {
-    fileUtils.fileDescriptionsInPath(path || defaultPath)
-      .then((files: File[]) => {
-        event.sender.send(messages.RECEIVE_FILES, files)
+  ipcMain.on(messages.GET_PATH, (event: Event, pathname: string = defaultPath) => {
+    console.log('request to read '  + pathname)
+    fileUtils.getPath(pathname, 1)
+      .then((path: Path) => {
+        event.sender.send(messages.RECEIVE_PATH, path)
       })
   })
 
