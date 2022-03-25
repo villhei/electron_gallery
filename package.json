@@ -21,7 +21,7 @@
     "@types/react-redux": "^5.0.15",
     "@types/webassembly-js-api": "^0.0.1",
     "bluebird": "^3.5.1",
-    "electron": "^1.8.2",
+    "electron": "^13.6.6",
     "eventemitter3": "^3.0.1",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
